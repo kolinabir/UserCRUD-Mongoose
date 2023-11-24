@@ -1,9 +1,15 @@
 import { IUser } from '../interfaces/user.Interface';
 import User from '../model/user.model';
 
-const createUser = async (userData: IUser): Promise<IUser> => {
+const createUser = async (userData: IUser): Promise<IUser | null> => {
   const result = await User.create(userData);
-  return result;
+
+  if (result) {
+    const { password, ...responseUser } = result._doc;
+    return responseUser;
+  }
+
+  return null;
 };
 
 const getAllUsers = async (): Promise<IUser[]> => {
@@ -14,7 +20,7 @@ const getAllUsers = async (): Promise<IUser[]> => {
 };
 
 const getSingleUserById = async (userId: number): Promise<IUser | null> => {
-  const result = await User.findOne({ userId });
+  const result = await User.findOne({ userId }).select('-password');
   return result;
 };
 
@@ -26,7 +32,8 @@ const updateUserById = async (
   if (result) {
     result.set(userData);
     await result.save();
-    return result;
+    const { password, ...responseUser } = result._doc;
+    return responseUser;
   }
   return null;
 };

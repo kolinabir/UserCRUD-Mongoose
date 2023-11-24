@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Query, Schema, model } from 'mongoose';
 import { IUser } from '../interfaces/user.Interface';
 
 const userSchema = new Schema<IUser>({
@@ -77,6 +77,12 @@ const userSchema = new Schema<IUser>({
     },
   ],
 });
+
+userSchema.statics.findOneById = async function (
+  userId: number,
+): Promise<IUser | null> {
+  return this.findOne({ userId });
+};
 
 const User = model<IUser>('User', userSchema);
 
