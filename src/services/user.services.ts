@@ -12,7 +12,7 @@ const getAllUsers = async (): Promise<IUser[]> => {
 };
 
 const getSingleUserById = async (userId: number): Promise<IUser | null> => {
-  const result = await User.findById(userId);
+  const result = await User.findOne({ userId });
   return result;
 };
 
@@ -20,11 +20,13 @@ const updateUserById = async (
   userId: number,
   userData: IUser,
 ): Promise<IUser | null> => {
-  const result = await User.findByIdAndUpdate(userId, userData, {
-    new: true,
-    runValidators: true,
-  });
-  return result;
+  const result = await User.findOne({ userId });
+  if (result) {
+    result.set(userData);
+    await result.save();
+    return result;
+  }
+  return null;
 };
 
 export const userServices = {

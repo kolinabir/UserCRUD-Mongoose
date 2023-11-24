@@ -78,8 +78,7 @@ const getSingleUserById = async (req: Request, res: Response) => {
 
 const updateUserById = async (req: Request, res: Response) => {
   try {
-    const result = await userServices.updateUserById(
-      Number(req.params.id),
+    const result = await userServices.updateUserById(Number(req.params.id),
       req.body,
     );
     if (result) {
