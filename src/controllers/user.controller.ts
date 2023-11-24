@@ -1,14 +1,21 @@
 import { Request, Response } from 'express';
 import { userServices } from '../services/user.services';
+import { IUser } from '../interfaces/user.Interface';
+
+const userWithOutPassword = (user: IUser) => {
+  const { password, ...userWithoutPassword } = user;
+  return userWithoutPassword;
+};
 
 const createUser = async (req: Request, res: Response) => {
   try {
     const result = await userServices.createUser(req.body);
+    const user = userWithOutPassword(result);
     if (result) {
       res.status(201).json({
         status: 'success',
         message: 'User created successfully!',
-        data: result,
+        data: user,
       });
     } else {
       res.status(400).json({

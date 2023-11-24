@@ -7,7 +7,9 @@ const createUser = async (userData: IUser): Promise<IUser> => {
 };
 
 const getAllUsers = async (): Promise<IUser[]> => {
-  const result = await User.find();
+  const result = await User.find().select(
+    'username fullName age email address',
+  );
   return result;
 };
 
