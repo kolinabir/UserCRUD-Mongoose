@@ -9,7 +9,6 @@ const createUser = async (userData: IUser): Promise<IUser | null> => {
 
   // Define a partial IUser without the 'password' property
   const partialUser: Partial<IUser> = {
-    userId,
     ...restData,
   };
 
@@ -39,11 +38,10 @@ const updateUserById = async (
   if (result) {
     result.set(userData);
     await result.save();
-    const { _id: userId, password, ...restData } = result.toObject();
+    const { _id, password, ...restData } = result.toObject();
 
     // Define a partial IUser without the 'password' property
     const partialUser: Partial<IUser> = {
-      userId,
       ...restData,
     };
     const userWithoutPassword = partialUser as IUser;
