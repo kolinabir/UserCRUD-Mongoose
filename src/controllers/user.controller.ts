@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Request, Response } from 'express';
 import { userServices } from '../services/user.services';
 import userValidationSchema from '../validations/user.validation';
+import { Error } from 'mongoose';
 
 const createUser = async (req: Request, res: Response) => {
   try {
@@ -19,11 +21,22 @@ const createUser = async (req: Request, res: Response) => {
       message: 'User created successfully!',
       data: result,
     });
-  } catch (error) {
-    res.status(500).json({
-      message: 'Something went wrong',
-      error: error,
-    });
+  } catch (error: any) {
+    if (error?.message) {
+      res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: {
+          code: 500,
+          description: 'Something went wrong!',
+        },
+      });
+    }
   }
 };
 
@@ -68,15 +81,22 @@ const getSingleUserById = async (req: Request, res: Response) => {
         },
       });
     }
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'User not found',
-      error: {
-        code: 404,
-        description: 'User not found!',
-      },
-    });
+  } catch (error: any) {
+    if (error?.message) {
+      res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: {
+          code: 500,
+          description: 'Something went wrong!',
+        },
+      });
+    }
   }
 };
 
@@ -102,15 +122,22 @@ const updateUserById = async (req: Request, res: Response) => {
         },
       });
     }
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'User not found',
-      error: {
-        code: 404,
-        description: 'User not found!',
-      },
-    });
+  } catch (error: any) {
+    if (error?.message) {
+      res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: {
+          code: 500,
+          description: 'Something went wrong!',
+        },
+      });
+    }
   }
 };
 
@@ -133,15 +160,22 @@ const deleteUserById = async (req: Request, res: Response) => {
         },
       });
     }
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'User not found',
-      error: {
-        code: 404,
-        description: 'User not found!',
-      },
-    });
+  } catch (error: any) {
+    if (error?.message) {
+      res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: {
+          code: 500,
+          description: 'Something went wrong!',
+        },
+      });
+    }
   }
 };
 
