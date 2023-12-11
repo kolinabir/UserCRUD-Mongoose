@@ -1,4 +1,4 @@
-import { IUser } from '../interfaces/user.Interface';
+import { IUser, Order } from '../interfaces/user.Interface';
 import User from '../model/user.model';
 import bcrypt from 'bcrypt';
 
@@ -34,12 +34,8 @@ const getAllUsers = async (): Promise<IUser[]> => {
 };
 
 const getSingleUserById = async (userId: number): Promise<IUser | null> => {
-  const existingUser = await User.findOne({ userId: userId });
-  if (!existingUser) {
-    throw new Error('User not found!!!');
-  }
-  const result = await User.findOne({ userId }).select('-password');
-  return result;
+  const user = await getUserAndOrders(userId);
+  return user;
 };
 
 const updateUserById = async (
@@ -57,10 +53,54 @@ const deleteUserById = async (userId: number): Promise<IUser | null> => {
   return result;
 };
 
+const addProductToUsers = async (
+  userId: number,
+  products: Order,
+): Promise<IUser | null> => {
+  const result = await User.findOneAndUpdate(
+    { userId },
+    { $push: { orders: products } },
+    { new: true },
+  ).select('-password');
+  return result;
+};
+const getUserAndOrders = async (userId: number) => {
+  const existingUser = await User.findOne({ userId: userId }).select(
+    '-password',
+  );
+  if (!existingUser) {
+    throw new Error('User not found!!!');
+  }
+  return existingUser;
+};
+
+const getSingleUserOrders = async (
+  userId: number,
+): Promise<IUser['orders']> => {
+  const user = await getUserAndOrders(userId);
+  return user.orders;
+};
+
+const calculateTotalPrice = async (
+  userId: number,
+): Promise<{ totalPrice: number }> => {
+  const user = await getUserAndOrders(userId);
+
+  let totalPrice = 0;
+  user.orders.forEach((order) => {
+    totalPrice += order.price * order.quantity;
+  });
+
+  return { totalPrice };
+};
+
 export const userServices = {
   createUser,
   getAllUsers,
   getSingleUserById,
   updateUserById,
   deleteUserById,
+  addProductToUsers,
+  getSingleUserOrders,
+  calculateTotalPrice,
 };

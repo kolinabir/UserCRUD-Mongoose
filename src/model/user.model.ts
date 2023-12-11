@@ -78,11 +78,11 @@ const userSchema = new Schema<IUser>({
   ],
 });
 
-userSchema.statics.findOneById = async function (
-  userId: number,
-): Promise<IUser | null> {
-  return this.findOne({ userId });
-};
+// userSchema.statics.findOneById = async function (
+//   userId: number,
+// ): Promise<IUser | null> {
+//   return this.findOne({ userId });
+// };
 
 userSchema.pre('findOneAndUpdate', async function (next) {
   const query = this.getQuery();

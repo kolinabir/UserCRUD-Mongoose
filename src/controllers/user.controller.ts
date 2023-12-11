@@ -2,7 +2,6 @@
 import { Request, Response } from 'express';
 import { userServices } from '../services/user.services';
 import userValidationSchema from '../validations/user.validation';
-import { Error } from 'mongoose';
 
 const createUser = async (req: Request, res: Response) => {
   try {
@@ -140,6 +139,86 @@ const updateUserById = async (req: Request, res: Response) => {
     }
   }
 };
+const addProductsToUserByID = async (req: Request, res: Response) => {
+  try {
+    const result = await userServices.addProductToUsers(
+      Number(req.params.id),
+      req.body,
+    );
+    if (result) {
+      res.status(200).json({
+        status: true,
+        message: 'Product added successfully!',
+        data: result,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    }
+  } catch (error: any) {
+    if (error?.message) {
+      res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: {
+          code: 500,
+          description: 'Something went wrong!',
+        },
+      });
+    }
+  }
+};
+
+const getSingleUserOrdersById = async (req: Request, res: Response) => {
+  try {
+    const result = await userServices.getSingleUserOrders(
+      Number(req.params.id),
+    );
+    if (result) {
+      res.status(200).json({
+        status: true,
+        message: 'User fetched successfully!',
+        data: result,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    }
+  } catch (error: any) {
+    if (error?.message) {
+      res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: {
+          code: 500,
+          description: 'Something went wrong!',
+        },
+      });
+    }
+  }
+};
 
 const deleteUserById = async (req: Request, res: Response) => {
   try {
@@ -178,6 +257,45 @@ const deleteUserById = async (req: Request, res: Response) => {
     }
   }
 };
+const calculateTotalPriceOfUserById = async (req: Request, res: Response) => {
+  try {
+    const result = await userServices.calculateTotalPrice(
+      Number(req.params.id),
+    );
+    if (result) {
+      res.status(200).json({
+        status: true,
+        message: 'Total price calculated successfully!',
+        data: result,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'User not found',
+        error: {
+          code: 404,
+          description: 'User not found!',
+        },
+      });
+    }
+  } catch (error: any) {
+    if (error?.message) {
+      res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    } else {
+      res.status(500).json({
+        success: false,
+        message: 'Internal server error',
+        error: {
+          code: 500,
+          description: 'Something went wrong!',
+        },
+      });
+    }
+  }
+};
 
 export const userController = {
   createUser,
@@ -185,4 +303,7 @@ export const userController = {
   deleteUserById,
   getSingleUserById,
   updateUserById,
+  addProductsToUserByID,
+  getSingleUserOrdersById,
+  calculateTotalPriceOfUserById,
 };
