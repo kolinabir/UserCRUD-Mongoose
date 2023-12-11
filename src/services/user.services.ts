@@ -34,7 +34,7 @@ const getAllUsers = async (): Promise<IUser[]> => {
 };
 
 const getSingleUserById = async (userId: number): Promise<IUser | null> => {
-  const existingUser = await User.findOne({ userId: String(userId) });
+  const existingUser = await User.findOne({ userId: userId });
   if (!existingUser) {
     throw new Error('User not found!!!');
   }
@@ -46,11 +46,6 @@ const updateUserById = async (
   userId: number,
   userData: IUser,
 ): Promise<IUser | null> => {
-  const existingUser = await User.findOne({ userId: String(userId) });
-  if (!existingUser) {
-    throw new Error('User not found!!!!!!!!!!!!!!!!!!!!');
-  }
-
   const result = await User.findOneAndUpdate({ userId }, userData, {
     new: true,
   }).select('-password');
@@ -58,10 +53,6 @@ const updateUserById = async (
 };
 
 const deleteUserById = async (userId: number): Promise<IUser | null> => {
-  const existingUser = await User.findOne({ userId: String(userId) });
-  if (!existingUser) {
-    throw new Error('User not found!!!');
-  }
   const result = await User.findOneAndDelete({ userId: userId });
   return result;
 };

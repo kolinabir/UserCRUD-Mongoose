@@ -84,6 +84,24 @@ userSchema.statics.findOneById = async function (
   return this.findOne({ userId });
 };
 
+userSchema.pre('findOneAndUpdate', async function (next) {
+  const query = this.getQuery();
+  const isUserExist = await User.findOne({ userId: query.userId });
+  if (!isUserExist) {
+    throw new Error('User does not exist!');
+  }
+  next();
+});
+
+userSchema.pre('findOneAndDelete', async function (next) {
+  const query = this.getQuery();
+  const isUserExist = await User.findOne({ userId: query.userId });
+  if (!isUserExist) {
+    throw new Error('User does not exist!!');
+  }
+  next();
+});
+
 const User = model<IUser>('User', userSchema);
 
 export default User;
